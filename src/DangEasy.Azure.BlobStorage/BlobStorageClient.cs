@@ -115,7 +115,7 @@ namespace DangEasy.Azure.BlobStorage
         protected async Task<CloudBlobContainer> CreateContainerAsync(string containerName)
         {
             var container = CloudBlobClient.GetContainerReference(containerName);
-            var res = await container.CreateIfNotExistsAsync();
+            await container.CreateIfNotExistsAsync();
 
             return container;
         }

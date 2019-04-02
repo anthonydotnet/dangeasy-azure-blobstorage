@@ -31,13 +31,13 @@ var info = _client.GetInfoAsync(filePath).Result;
 System.Console.WriteLine($"{info.Path}, Created:{info.Created}, Modified:{info.Modified}, Size:{info.Size}");
 
 
-// show root files - should have 1 file
+// show root blobs - should have 1 folder
 System.Console.WriteLine($"\nShowing blobs root");
 var blobNames = _client.GetListAsync($"").Result;
 blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
 
 
-// show root files - should have 1 file
+// show files in folder - should have 1 file
 System.Console.WriteLine($"\nShowing blobs in folder");
 blobNames = _client.GetListAsync($"foldername").Result;
 blobNames.ToList().ForEach(x => System.Console.WriteLine(x));

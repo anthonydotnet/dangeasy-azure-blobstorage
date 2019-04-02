@@ -35,7 +35,7 @@ namespace Example.Console
         public void Run()
         {
             // upload file
-            var filePath = $"foldername/example.txt"; // relative to the container
+            var filePath = $"myfolder/example.txt"; // relative to the container
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
             System.Console.WriteLine($"\nUploading file {filePath}");
             var saved = _client.SaveFileAsync(filePath, stream).GetAwaiter().GetResult();
@@ -54,15 +54,15 @@ namespace Example.Console
             System.Console.WriteLine($"{info.Path}, Created:{info.Created}, Modified:{info.Modified}, Size:{info.Size}");
 
 
-            // show root files - should have 1 file
+            // show root blobs - should have 1 blob
             System.Console.WriteLine($"\nShowing blobs root");
             var blobNames = _client.GetListAsync($"").Result;
             blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
 
 
-            // show root files - should have 1 file
-            System.Console.WriteLine($"\nShowing blobs in folder");
-            blobNames = _client.GetListAsync($"foldername").Result;
+            // show blobs in myfolder - should have 1 blobs
+            System.Console.WriteLine($"\nShowing blobs in myfolder");
+            blobNames = _client.GetListAsync($"myfolder").Result;
             blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
 
 
