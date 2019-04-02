@@ -15,7 +15,7 @@ A simple intuitive library for Azure Blob Storage.
 var filePath = $"foldername/example.txt"; // relative to the container
 var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
 System.Console.WriteLine($"\nUploading file {filePath}");
-var saved = _client.SaveFileAsync(filePath, stream).GetAwaiter().GetResult();
+var saved = _client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
 System.Console.WriteLine($"\nUploaded: {saved}");
 
 

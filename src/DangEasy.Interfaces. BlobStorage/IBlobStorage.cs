@@ -12,7 +12,7 @@ namespace DangEasy.Interfaces.BlobStorage
         Task<Stream> GetAsync(string filePath);
         Task<IBlobInformation> GetInfoAsync(string path);
         Task<IEnumerable<string>> GetListAsync(string path);
-        Task<bool> SaveFileAsync(string filePath, Stream stream);
+        Task<bool> SaveAsync(string filePath, Stream stream);
     }
 
 

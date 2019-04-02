@@ -13,7 +13,7 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
             // upload file
             var filePath = $"example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            var result = Client.SaveFileAsync(filePath, stream).Result;
+            var result = Client.SaveAsync(filePath, stream).Result;
 
             Assert.True(result);
         }
@@ -25,7 +25,7 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
             // upload file
             var filePath = $"folder/anotherfolder/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            var result = Client.SaveFileAsync(filePath, stream).Result;
+            var result = Client.SaveAsync(filePath, stream).Result;
 
             Assert.True(result);
         }

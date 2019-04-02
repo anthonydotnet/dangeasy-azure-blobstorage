@@ -12,7 +12,7 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
             // upload file
             var filePath = $"example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            Client.SaveFileAsync(filePath, stream).GetAwaiter().GetResult();
+            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
 
             var downloadedStream = Client.GetAsync(filePath).Result as MemoryStream;
             string result = Encoding.UTF8.GetString(downloadedStream.ToArray());

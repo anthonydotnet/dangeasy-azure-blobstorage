@@ -101,7 +101,7 @@ namespace DangEasy.Azure.BlobStorage
         }
 
 
-        public async Task<bool> SaveFileAsync(string path, Stream stream)
+        public async Task<bool> SaveAsync(string path, Stream stream)
         {
             var blob = CloudBlobContainer.GetBlockBlobReference(path);
             await blob.UploadFromStreamAsync(stream).ConfigureAwait(false);
