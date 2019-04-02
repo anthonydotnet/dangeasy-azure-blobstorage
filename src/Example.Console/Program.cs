@@ -47,6 +47,7 @@ namespace Example.Console
             var exists = _client.ExistsAsync(filePath).Result;
             System.Console.WriteLine($"{exists}");
 
+
             // file info
             System.Console.WriteLine($"\nBlob info:");
             var info = _client.GetInfoAsync(filePath).Result;
@@ -57,6 +58,7 @@ namespace Example.Console
             System.Console.WriteLine($"\nShowing blobs root");
             var blobNames = _client.GetListAsync($"").Result;
             blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
+
 
             // show root files - should have 1 file
             System.Console.WriteLine($"\nShowing blobs in folder");
