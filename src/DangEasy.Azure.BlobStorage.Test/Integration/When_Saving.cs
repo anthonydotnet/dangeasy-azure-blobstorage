@@ -17,5 +17,17 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
 
             Assert.True(result);
         }
+
+
+        [Fact]
+        public void File_Is_Uploaded_To_Deep_Path()
+        {
+            // upload file
+            var filePath = $"folder/anotherfolder/example.txt";
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
+            var result = Client.SaveFileAsync(filePath, stream).Result;
+
+            Assert.True(result);
+        }
     }
 }

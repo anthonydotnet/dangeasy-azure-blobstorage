@@ -19,7 +19,7 @@ namespace Example.Console
 
             Configuration = builder.Build();
 
-            _client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"], "MyContainerName"); // must be lower case
+            _client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"], "mycontainer"); // must be lower case
         }
 
 
@@ -35,7 +35,7 @@ namespace Example.Console
         public void Run()
         {
             // upload file
-            var filePath = $"example.txt"; // relative to the container
+            var filePath = $"foldername/example.txt"; // relative to the container
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
             System.Console.WriteLine($"\nUploading file {filePath}");
             var saved = _client.SaveFileAsync(filePath, stream).GetAwaiter().GetResult();
@@ -55,7 +55,12 @@ namespace Example.Console
 
             // show root files - should have 1 file
             System.Console.WriteLine($"\nShowing blobs root");
-            var blobNames = _client.GetListAsync($"/").Result;
+            var blobNames = _client.GetListAsync($"").Result;
+            blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
+
+            // show root files - should have 1 file
+            System.Console.WriteLine($"\nShowing blobs in folder");
+            blobNames = _client.GetListAsync($"foldername").Result;
             blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
 
 
