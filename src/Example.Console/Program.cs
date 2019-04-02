@@ -19,7 +19,7 @@ namespace Example.Console
 
             Configuration = builder.Build();
 
-            _client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"], "myfileshare"); // must be lower case
+            _client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"], "MyContainerName"); // must be lower case
         }
 
 
@@ -35,7 +35,7 @@ namespace Example.Console
         public void Run()
         {
             // upload file
-            var filePath = $"example.txt";
+            var filePath = $"example.txt"; // relative to the container
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
             System.Console.WriteLine($"\nUploading file {filePath}");
             var saved = _client.SaveFileAsync(filePath, stream).GetAwaiter().GetResult();
@@ -62,7 +62,7 @@ namespace Example.Console
             // download file
             System.Console.WriteLine($"\nDownloading {filePath}");
             var downloadedStream = _client.GetAsync(filePath).Result as MemoryStream;
-            string resultString = Encoding.UTF8.GetString(downloadedStream.ToArray());
+            var resultString = Encoding.UTF8.GetString(downloadedStream.ToArray());
             System.Console.WriteLine(resultString);
 
 

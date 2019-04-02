@@ -1,43 +1,47 @@
-# dangeasy-ucache
+# DangEasy-Azure-BlobStorage
 
-A caching package for Umbraco CMS. Automatically caches result of registered tree crawling and xpath results.
+A simple intuitive library for Azure Blob Storage.
 
-# Installation
-Use NuGet to install the [package](https://www.nuget.org/packages/DangEasy.UCache/).
-```
-PM> Install-Package DangEasy.UCache
-```
 
 ## Examples
-### Enabling UCache
-Add this setting to your web.config.
+### Setup 
 ```
-<add key="UCache:Enabled" value="true" />
-```
-
-### Registering content
-```
-// tell UCache your site node doctype
-UCache.Instance.RegisterSiteNodeContentTypeAlias("site"); // will default to top level nodes if not set
-
-// register with xpath
-UCache.Instance.RegisterSingle("homepage", "//home");
-UCache.Instance.RegisterCollection("blogPosts", "//home/blog/blogpost");
-
-// register with a function
-UCache.Instance.RegisterSingle("blogLanding", (rootNodeId) => ExampleContentService.GetBlogLandingNode(rootNodeId));
+ _client = new BlobStorageClient("<ConnectionString>", "<ContainerName>");
 ```
 
-### Retreiving content
+### Usage
 ```
-var home = UCache.Instance.Get("homepage"); 
-var posts = UCache.Instance.Fetch("blogPosts");
-var blog = UCache.Instance.Get("blogLanding") as Blog;
+// upload file
+var path = $"example.txt"; // relative to the container
+var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
+System.Console.WriteLine($"\nUploading file {filePath}");
+var saved = _client.SaveFileAsync(filePath, stream).GetAwaiter().GetResult();
+System.Console.WriteLine($"\nUploaded: {saved}");
+
+// file exists
+System.Console.WriteLine($"\nFile exists?");
+var exists = _client.ExistsAsync(filePath).Result;
+System.Console.WriteLine($"{exists}");
+
+// file info
+System.Console.WriteLine($"\nBlob info:");
+var info = _client.GetInfoAsync(filePath).Result;
+System.Console.WriteLine($"{info.Path}, Created:{info.Created}, Modified:{info.Modified}, Size:{info.Size}");
+
+// show root files - should have 1 file
+System.Console.WriteLine($"\nShowing blobs root");
+var blobNames = _client.GetListAsync($"/").Result;
+blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
+
+// download file
+System.Console.WriteLine($"\nDownloading {filePath}");
+var downloadedStream = _client.GetAsync(filePath).Result as MemoryStream;
+var resultString = Encoding.UTF8.GetString(downloadedStream.ToArray());
+System.Console.WriteLine(resultString);
+
+// delete file
+System.Console.WriteLine($"\nDelete {filePath}");
+var deleted = _client.DeleteAsync(filePath).Result;
+System.Console.WriteLine($"Deleted: {deleted}");
 ```
 
-## Cache Clearing Events
-Cache clearing is aggressive. All content which is registered will be cleared on the following events. 
-- Published
-- Unpublished
-- Moved
-- Trashed
