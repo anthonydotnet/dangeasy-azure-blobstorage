@@ -7,14 +7,14 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
     public class When_Deleting : BaseIntegration
     {
         [Fact]
-        public void Blob_Is_Deleted()
+        public async void Blob_Is_Deleted()
         {
             // upload file
-            var filePath = $"example.txt";
+            var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            await  Client.SaveAsync(filePath, stream);
 
-            var result = Client.DeleteAsync(filePath).Result;
+            var result = await Client.DeleteAsync(filePath);
 
             Assert.True(result);
         }

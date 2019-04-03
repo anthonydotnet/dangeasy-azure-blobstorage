@@ -7,6 +7,7 @@ namespace DangEasy.Interfaces.BlobStorage
 {
     public interface IBlobStorage
     {
+        Task<bool> CreateContainerAsync(string containerName);
         Task<bool> DeleteAsync(string path);
         Task<bool> ExistsAsync(string path);
         Task<Stream> GetAsync(string filePath);

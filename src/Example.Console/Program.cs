@@ -9,6 +9,7 @@ namespace Example.Console
     class Program
     {
         const string TextFileBody = "This is a text file";
+        const string ContainerName = "mycontainer";
 
         IConfigurationRoot Configuration;
         BlobStorageClient _client;
@@ -19,7 +20,9 @@ namespace Example.Console
 
             Configuration = builder.Build();
 
-            _client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"], "mycontainer"); // must be lower case
+            _client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"]); // must be lower case
+
+            _client.CreateContainerAsync(ContainerName).GetAwaiter().GetResult();  
         }
 
 
@@ -35,11 +38,11 @@ namespace Example.Console
         public void Run()
         {
             // upload file
-            var filePath = $"myfolder/example.txt"; // relative to the container
+            var filePath = $"/{ContainerName}/myfolder/example.txt"; // relative to the container
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
             System.Console.WriteLine($"\nUploading file {filePath}");
             var saved = _client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
-            System.Console.WriteLine($"\nUploaded: {saved}");
+            System.Console.WriteLine($"Uploaded: {saved}");
 
 
             // file exists
@@ -56,13 +59,13 @@ namespace Example.Console
 
             // show root blobs - should have 1 blob
             System.Console.WriteLine($"\nShowing blobs root");
-            var blobNames = _client.GetListAsync($"").Result;
+            var blobNames = _client.GetListAsync($"/{ContainerName}").Result;
             blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
 
 
             // show blobs in myfolder - should have 1 blobs
             System.Console.WriteLine($"\nShowing blobs in myfolder");
-            blobNames = _client.GetListAsync($"myfolder").Result;
+            blobNames = _client.GetListAsync($"/{ContainerName}/myfolder").Result;
             blobNames.ToList().ForEach(x => System.Console.WriteLine(x));
 
 

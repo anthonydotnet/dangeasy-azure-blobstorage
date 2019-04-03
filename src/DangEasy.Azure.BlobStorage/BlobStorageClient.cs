@@ -13,24 +13,25 @@ namespace DangEasy.Azure.BlobStorage
     public class BlobStorageClient : IBlobStorage
     {
         public readonly CloudBlobClient CloudBlobClient;
-        public readonly CloudBlobContainer CloudBlobContainer;
         public readonly CloudStorageAccount StorageAccount;
 
-        public BlobStorageClient(string connectionString, string containerName)
+        public BlobStorageClient(string connectionString)
         {
             StorageAccount = CloudStorageAccount.Parse(connectionString);
 
             CloudBlobClient = StorageAccount.CreateCloudBlobClient();
-
-            CloudBlobContainer = CreateContainerAsync(containerName).Result;
         }
 
-
+        public async Task<bool> CreateContainerAsync(string containerName)
+        {
+            var container = CloudBlobClient.GetContainerReference(containerName);
+            return await container.CreateIfNotExistsAsync().ConfigureAwait(false);
+        }
 
 
         public async Task<bool> DeleteAsync(string path)
         {
-            var blob = CloudBlobContainer.GetBlockBlobReference(path);
+            var blob = GetBlobReference(path);
 
             return await blob.DeleteIfExistsAsync(DeleteSnapshotsOption.None, null, null, null).ConfigureAwait(false);
         }
@@ -47,7 +48,7 @@ namespace DangEasy.Azure.BlobStorage
 
         public async Task<bool> ExistsAsync(string path)
         {
-            var blob = CloudBlobContainer.GetBlockBlobReference(path);
+            var blob = GetBlobReference(path);
 
             return await blob.ExistsAsync().ConfigureAwait(false);
         }
@@ -55,7 +56,7 @@ namespace DangEasy.Azure.BlobStorage
 
         public async Task<Stream> GetAsync(string path)
         {
-            var blob = CloudBlobContainer.GetBlockBlobReference(path);
+            var blob = GetBlobReference(path);
 
             MemoryStream ms = new MemoryStream();
             await blob.DownloadToStreamAsync(ms).ConfigureAwait(false);
@@ -66,7 +67,7 @@ namespace DangEasy.Azure.BlobStorage
 
         public async Task<IBlobInformation> GetInfoAsync(string path)
         {
-            var blob = CloudBlobContainer.GetBlockBlobReference(path);
+            var blob = GetBlobReference(path);
             try
             {
                 await blob.FetchAttributesAsync().ConfigureAwait(false);
@@ -81,9 +82,7 @@ namespace DangEasy.Azure.BlobStorage
 
         public async Task<IEnumerable<string>> GetListAsync(string path)
         {
-            var directory = CloudBlobContainer.GetDirectoryReference(path);
-
-            CloudBlobDirectory dir = CloudBlobContainer.GetDirectoryReference(path);
+            CloudBlobDirectory dir = GetCloudBlobDirectory(path);
 
             List<string> results = new List<string>();
             BlobContinuationToken token = null;
@@ -103,21 +102,56 @@ namespace DangEasy.Azure.BlobStorage
 
         public async Task<bool> SaveAsync(string path, Stream stream)
         {
-            var blob = CloudBlobContainer.GetBlockBlobReference(path);
+            var blob = GetBlobReference(path);
             await blob.UploadFromStreamAsync(stream).ConfigureAwait(false);
 
             return true;
         }
 
 
+        //--
+        // Some messy building
+        //--
 
-
-        protected async Task<CloudBlobContainer> CreateContainerAsync(string containerName)
+        private CloudBlobContainer GetContainerReference(string path)
         {
-            var container = CloudBlobClient.GetContainerReference(containerName);
-            await container.CreateIfNotExistsAsync();
+            var trimmed = path.TrimStart('/');
+            var urlParts = trimmed.Split("/".ToCharArray(), StringSplitOptions.None).ToList();
+
+            var containerName = urlParts[0];
+            var container = CloudBlobClient.GetContainerReference(urlParts[0]);
 
             return container;
+        }
+
+
+        private CloudBlobDirectory GetCloudBlobDirectory(string path)
+        {
+            var trimmed = path.TrimStart('/');
+            var urlParts = trimmed.Split("/".ToCharArray(), StringSplitOptions.None).ToList();
+
+            var containerName = urlParts[0];
+            var container = CloudBlobClient.GetContainerReference(urlParts[0]);
+
+            urlParts.RemoveAt(0);
+            var relativePath = string.Join("/", urlParts);
+
+            return container.GetDirectoryReference(relativePath);
+        }
+
+
+        private CloudBlockBlob GetBlobReference(string path)
+        {
+            var trimmed = path.TrimStart('/');
+            var urlParts = trimmed.Split("/".ToCharArray(), StringSplitOptions.None).ToList();
+
+            var containerName = urlParts[0];
+            var container = CloudBlobClient.GetContainerReference(urlParts[0]);
+
+            urlParts.RemoveAt(0);
+            var relativePath = string.Join("/", urlParts);
+
+            return container.GetBlockBlobReference(relativePath);
         }
 
 
@@ -130,12 +164,12 @@ namespace DangEasy.Azure.BlobStorage
 
             return new BlobInformation
             {
-                Path = blob.Name,
+                Path = blob.Uri.LocalPath,
                 AbsoluteUri = blob.Uri.AbsoluteUri,
                 Size = blob.Properties.Length,
                 Created = blob.Properties.LastModified.Value.UtcDateTime,
                 Modified = blob.Properties.LastModified.Value.UtcDateTime
             };
-        }
+        }        
     }
 }

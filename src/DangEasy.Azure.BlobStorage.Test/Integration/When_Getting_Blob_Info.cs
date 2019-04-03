@@ -9,14 +9,14 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
     public class When_Getting_Blob_Info : BaseIntegration
     {
         [Fact]
-        public void BlobList_Is_Returned()
+        public async void BlobList_Is_Returned()
         {
             // upload file
-            var filePath = $"example.txt";
+            var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            await Client.SaveAsync(filePath, stream);
 
-            var result = Client.GetListAsync($"").Result;
+            var result = await Client.GetListAsync($"/{ContainerName}");
 
             Assert.NotEmpty(result);
             Assert.EndsWith(filePath, result.First());
@@ -24,28 +24,28 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
 
 
         [Fact]
-        public void Existing_Blob_Returns_True()
+        public async void Existing_Blob_Returns_True()
         {
             // upload file
-            var filePath = $"example.txt";
+            var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            await Client.SaveAsync(filePath, stream);
 
-            var result = Client.ExistsAsync(filePath).Result;
+            var result = await Client.ExistsAsync(filePath);
 
             Assert.True(result);
         }
 
 
         [Fact]
-        public void Existing_Blob_Returns_Info()
+        public async void Existing_Blob_Returns_Info()
         {
             // upload file
-            var filePath = $"example.txt";
+            var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            await Client.SaveAsync(filePath, stream);
 
-            var result = Client.GetInfoAsync(filePath).Result;
+            var result = await Client.GetInfoAsync(filePath);
 
             Assert.Equal(filePath, result.Path);
 
@@ -54,5 +54,22 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
             Assert.True(result.Modified > DateTime.MinValue);
             Assert.True(result.Size > 0);
         }
+
+
+        [Fact]
+        public async void Existing_Blob_Folder_Returns_True()
+        {
+            // upload file
+            var filePath = $"/{ContainerName}/myfolder/example.txt";
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
+            await Client.SaveAsync(filePath, stream);
+
+            var result = await Client.GetListAsync($"/{ContainerName}/myfolder");
+
+            Assert.NotEmpty(result);
+        }
+
+
+
     }
 }

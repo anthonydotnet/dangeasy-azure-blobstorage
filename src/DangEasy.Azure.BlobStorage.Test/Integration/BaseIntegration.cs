@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 namespace DangEasy.Azure.BlobStorage.Test.Integration
@@ -23,13 +24,16 @@ namespace DangEasy.Azure.BlobStorage.Test.Integration
             Configuration = builder.Build();
 
             ContainerName = $"my-test-container{DateTime.UtcNow.Ticks}";
-            Client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"], ContainerName);
+            Client = new BlobStorageClient(Configuration["AppSettings:ConnectionString"]);
+
+            // force this to execute!
+            Client.CreateContainerAsync(ContainerName).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
 
         public void Dispose()
         {
-            Client.CloudBlobContainer.DeleteIfExistsAsync().GetAwaiter().GetResult();
+            Client.CloudBlobClient.GetContainerReference(ContainerName).DeleteIfExistsAsync().Wait();
         }
     }
 }
