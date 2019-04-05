@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace DangEasy.Azure.BlobStorage.Async
+namespace DangEasy.BlobStorage.Azure.Async
 {
     public class AsyncLazy<T> : Lazy<Task<T>>
     {

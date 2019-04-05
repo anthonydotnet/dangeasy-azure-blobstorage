@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace DangEasy.Azure.BlobStorage.Test.Integration
+namespace DangEasy.BlobStorage.Azure.Test.Integration
 {
     public class BaseIntegration : IDisposable
     {

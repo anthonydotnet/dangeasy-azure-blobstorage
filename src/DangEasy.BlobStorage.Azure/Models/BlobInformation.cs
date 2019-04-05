@@ -1,7 +1,7 @@
 ﻿using System;
 using DangEasy.Interfaces.BlobStorage;
 
-namespace DangEasy.Azure.BlobStorage.Models
+namespace DangEasy.BlobStorage.Azure.Models
 {
     public class BlobInformation : IBlobInformation
     {

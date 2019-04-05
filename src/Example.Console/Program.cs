@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using DangEasy.Azure.BlobStorage;
+using DangEasy.BlobStorage.Azure;
 using System.IO;
 using System.Text;
 using Microsoft.Extensions.Configuration;
