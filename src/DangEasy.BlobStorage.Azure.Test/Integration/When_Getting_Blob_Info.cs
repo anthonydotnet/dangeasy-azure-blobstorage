@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Xunit;
 
 namespace DangEasy.BlobStorage.Azure.Test.Integration
@@ -14,7 +15,8 @@ namespace DangEasy.BlobStorage.Azure.Test.Integration
             // upload file
             var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            await Client.SaveAsync(filePath, stream);
+            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            
 
             var result = await Client.GetListAsync($"/{ContainerName}");
 
@@ -29,7 +31,8 @@ namespace DangEasy.BlobStorage.Azure.Test.Integration
             // upload file
             var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            await Client.SaveAsync(filePath, stream);
+            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            
 
             var result = await Client.ExistsAsync(filePath);
 
@@ -43,7 +46,8 @@ namespace DangEasy.BlobStorage.Azure.Test.Integration
             // upload file
             var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            await Client.SaveAsync(filePath, stream);
+            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            
 
             var result = await Client.GetInfoAsync(filePath);
 
@@ -62,14 +66,12 @@ namespace DangEasy.BlobStorage.Azure.Test.Integration
             // upload file
             var filePath = $"/{ContainerName}/myfolder/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            await Client.SaveAsync(filePath, stream);
+            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+            
 
             var result = await Client.GetListAsync($"/{ContainerName}/myfolder");
 
             Assert.NotEmpty(result);
         }
-
-
-
     }
 }

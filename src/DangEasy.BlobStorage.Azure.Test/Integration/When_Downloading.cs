@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using System.Threading;
 using Xunit;
 
 namespace DangEasy.BlobStorage.Azure.Test.Integration
@@ -12,7 +13,9 @@ namespace DangEasy.BlobStorage.Azure.Test.Integration
             // upload file
             var filePath = $"/{ContainerName}/example.txt";
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(TextFileBody));
-            await Client.SaveAsync(filePath, stream);
+            Client.SaveAsync(filePath, stream).GetAwaiter().GetResult();
+
+
 
             var downloadedStream = await Client.GetAsync(filePath) as MemoryStream;
             string result = Encoding.UTF8.GetString(downloadedStream.ToArray());
