@@ -10,25 +10,20 @@
     <Authors>Anthony Dang</Authors>
     <Owners>Anthony Dang</Owners>
     <Copyright>Anthony Dang 2019</Copyright>
-    <Description>An easy to use library for Azure Blob storage.</Description>
+    <Description>An easy to use library for Azure Blob Storage.</Description>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <PackageTags>Blob, Storage, Files, Azure</PackageTags>
 
     <PackageLicenseUrl>https://github.com/anthonydotnet/dangeasy-blobstorage-azure/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/anthonydotnet/dangeasy-blobstorage-azure</PackageProjectUrl>    
     <RepositoryUrl>https://github.com/anthonydotnet/dangeasy-blobstorage-azure</RepositoryUrl>
-    
-
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DangEasy.Interfaces.BlobStorage" Version="1.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DangEasy.Interfaces.BlobStorage\DangEasy.Interfaces.BlobStorage.csproj" />
-    <ProjectReference Include="..\DangEasy.Interfaces.BlobStorage\DangEasy.Interfaces.BlobStorage.csproj" />
   </ItemGroup>
 </Project>
