@@ -1,13 +1,13 @@
-# DangEasy-Azure-BlobStorage
+# DangEasy-BlobStorage-Azure
 
 A simple intuitive library for Azure Blob Storage.
 
 # Installation
 
-Use NuGet to install the [package](https://www.nuget.org/packages/DangEasy.Azure.BlobStorage/).
+Use NuGet to install the [package](https://www.nuget.org/packages/DangEasy.BlobStorage.Azure/).
 
 ```
-PM> Install-Package DangEasy-Azure-BlobStorage
+PM> Install-Package DangEasy-BlobStorage-Azure
 ```
 
 
