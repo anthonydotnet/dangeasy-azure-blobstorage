@@ -14,7 +14,7 @@ PM> Install-Package DangEasy-BlobStorage-Azure
 ## Examples
 ### Setup 
 ```
- _client = new BlobStorageClient("<ConnectionString>", "<ContainerName>");
+ _client = new BlobStorageClient("<ConnectionString>");
 ```
 
 ### Usage
